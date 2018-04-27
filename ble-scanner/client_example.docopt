@@ -1,0 +1,13 @@
+Protocol Translator Example.
+
+Usage:
+  ble-scanner --protocol-translator-name <name> [--endpoint-postfix <name>] [--port <int>] [--host <hostname>]
+  ble-scanner --help
+
+Options:
+  -h --help                                 Show this screen.
+  -n --protocol-translator-name <name>      Name of the Protocol Translator.
+  -e --endpoint-postfix <postfix>           Name for the endpoint postfix [default: -0]
+  -p --port <int>                           Edge Core port number [default: 22223].
+  --host <string>                           Edge Core host address [default: 127.0.0.1].
+

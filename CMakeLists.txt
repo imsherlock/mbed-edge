@@ -49,7 +49,8 @@ add_subdirectory (lib)
 add_subdirectory (edge-core)
 add_subdirectory (edge-rpc)
 add_subdirectory (pt-client)
-add_subdirectory (pt-example)
+#add_subdirectory (pt-example)
+add_subdirectory (ble-scanner)
 
 # Conditionally build lora-pt if mosquitto is available
 unset(MOSQUITTO_LIB CACHE)
@@ -87,5 +88,4 @@ endif ()
 
 file (GLOB EDGE_CORE_SOURCES ./edge-core/*.c)
 file (GLOB CLIENT_SOURCES ./pt-client/*.c)
-file (GLOB EXAMPLE_SOURCES ./pt-example/*.c)
 add_library (mbed-edge-internal STATIC ${CLIENT_SOURCES} ${EDGE_CORE_SOURCES})
