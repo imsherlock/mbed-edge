@@ -217,7 +217,7 @@ struct ble_device_list *get_ble_devices(void)
 		goto cleanup;
 	}
 
-	err = hci_le_set_scan_enable(dd, 0x01, 0x0, 1000);
+	err = hci_le_set_scan_enable(dd, 0x01, 0x1, 1000);
 	if (err < 0) {
 		perror("Enable scan failed");
 		goto cleanup;
