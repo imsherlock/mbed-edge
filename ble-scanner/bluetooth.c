@@ -116,6 +116,7 @@ static int get_advertising_devices(int dd, uint8_t filter_type,
 	struct hci_filter nf, of;
 	socklen_t olen;
 	int len;
+    int no_devices = 10;
 
 	olen = sizeof(of);
 	if (getsockopt(dd, SOL_HCI, HCI_FILTER, &of, &olen) < 0) {
@@ -132,7 +133,7 @@ static int get_advertising_devices(int dd, uint8_t filter_type,
 		return -1;
 	}
 
-	while (1) {
+	while (no_devices-- > 0) {
 		evt_le_meta_event *meta;
 		le_advertising_info *info;
 		char addr[BLE_MAX_ADDR_STRLEN];
