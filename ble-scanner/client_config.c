@@ -35,6 +35,7 @@ pt_device_t *client_config_create_device(const char *device_id, const char *endp
     pt_status_t status = PT_STATUS_SUCCESS;
     char *endpoint_id = malloc(strlen(device_id) + strlen(endpoint_postfix) + 1);
     sprintf(endpoint_id, "%s%s", device_id, endpoint_postfix);
+    printf("endpoint_id = %s%s", device_id, endpoint_postfix);
     pt_device_t *device = pt_create_device(endpoint_id, LIFETIME, QUEUE, &status);
     if (status != PT_STATUS_SUCCESS) {
         tr_err("Could not allocate device structure.");
@@ -68,6 +69,7 @@ pt_device_list_t *client_config_create_device_list(const char *endpoint_postfix)
     {
         pt_device_t *device = NULL;
         char *name = list_entry(entry, struct ble_device, name);
+        printf("name = %s\n", name);
 
         device = client_config_create_device(name, endpoint_postfix);
         if (NULL == device) {

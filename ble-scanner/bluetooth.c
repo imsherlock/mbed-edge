@@ -171,7 +171,7 @@ static int get_advertising_devices(int dd, uint8_t filter_type,
 			eir_parse_name(info->data, info->length,
 							dev->name, sizeof(dev->name) - 1);
 
-			printf("%s %s\n", dev->addr, dev->name);
+			printf("addr=%s name=%s\n", dev->addr, dev->name);
 
             INIT_LIST_HEAD(&dev->_list);
 

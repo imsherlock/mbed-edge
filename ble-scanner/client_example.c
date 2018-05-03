@@ -506,6 +506,7 @@ void *protocol_translator_api_start_func(void *ctx)
     pt_cbs.connection_shutdown_cb = (pt_connection_shutdown_cb) shutdown_cb_handler;
 
     if(0 != pt_client_start(pt_start_ctx->hostname, pt_start_ctx->port, pt_start_ctx->name, &pt_cbs, /* userdata */ NULL , &g_connection)) {
+        tr_info("pt_client_start failed!\n");
         keep_running = 0;
     }
     return NULL;
