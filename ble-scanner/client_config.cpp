@@ -18,9 +18,11 @@
  * ----------------------------------------------------------------------------
  */
 
+extern "C" {
 #include "common/integer_length.h"
 #include "pt-client/pt_api.h"
 #include "pt-client/pt_device_object.h"
+}
 #include "pt-example/client_config.h"
 #include "ipso_objects.h"
 #include "mbed-trace/mbed_trace.h"
@@ -33,7 +35,7 @@
 pt_device_t *client_config_create_device(const char *device_id, const char *endpoint_postfix)
 {
     pt_status_t status = PT_STATUS_SUCCESS;
-    char *endpoint_id = malloc(strlen(device_id) + strlen(endpoint_postfix) + 1);
+    char *endpoint_id = (char *)malloc(strlen(device_id) + strlen(endpoint_postfix) + 1);
     sprintf(endpoint_id, "%s%s", device_id, endpoint_postfix);
     printf("endpoint_id = %s%s", device_id, endpoint_postfix);
     pt_device_t *device = pt_create_device(endpoint_id, LIFETIME, QUEUE, &status);
@@ -47,7 +49,7 @@ pt_device_t *client_config_create_device(const char *device_id, const char *endp
 pt_device_t *client_config_create_reappearing_device(const char *device_id, const char *endpoint_postfix)
 {
     pt_device_t *device = client_config_create_device(device_id, endpoint_postfix);
-    ipso_create_bluetooth(device, 0, 30);
+    // ipso_create_bluetooth(device, 0, 30);
     return device;
 }
 
@@ -58,25 +60,24 @@ void example_reboot_callback(const pt_resource_opaque_t *resource, const uint8_t
 
 pt_device_list_t *client_config_create_device_list(const char *endpoint_postfix)
 {
-    pt_device_list_t *device_list = malloc(sizeof(pt_device_list_t));
+    pt_device_list_t *device_list = (pt_device_list_t *)malloc(sizeof(pt_device_list_t));
     ns_list_init(device_list);
-    struct ble_device_list *ble_list;
+    std::map<bdaddr_t, int, cmpBLE> ble_list;
 
     ble_list = get_ble_devices();
 
-    struct list_head *entry;
-    list_for_each(entry, &ble_list->_list)
+    std::map<bdaddr_t, int>::iterator itr;
+    for (itr = ble_list.begin(); itr != ble_list.end(); ++itr)
     {
         pt_device_t *device = NULL;
-        char *name = list_entry(entry, struct ble_device, name);
-        printf("name = %s\n", name);
+        printf("MAC = %s\n", itr->first);
 
-        device = client_config_create_device(name, endpoint_postfix);
+        device = client_config_create_device((char *)itr->first.b, endpoint_postfix);
         if (NULL == device) {
             continue;
         }
 
-        pt_device_entry_t *device_entry = malloc(sizeof(pt_device_entry_t));
+        pt_device_entry_t *device_entry = (pt_device_entry_t*)malloc(sizeof(pt_device_entry_t));
         device_entry->device = device;
         ns_list_add_to_end(device_list, device_entry);
     }
@@ -86,7 +87,7 @@ pt_device_list_t *client_config_create_device_list(const char *endpoint_postfix)
 
 void client_config_add_device_to_config(pt_device_list_t *device_list, pt_device_t *device)
 {
-    pt_device_entry_t *device_entry = malloc(sizeof(pt_device_entry_t));
+    pt_device_entry_t *device_entry = (pt_device_entry_t*)malloc(sizeof(pt_device_entry_t));
     device_entry->device = device;
     ns_list_add_to_end(device_list, device_entry);
 }

@@ -18,11 +18,13 @@
  * ----------------------------------------------------------------------------
  */
 
+extern "C" {
 #include "common/constants.h"
 #include "common/integer_length.h"
 #include "pt-client/pt_api.h"
 #include "pt-client/client.h"
 #include "mbed-trace/mbed_trace.h"
+}
 #include "pt-example/client_config.h"
 #include "ble-scanner/client_example.h"
 #include "ipso_objects.h"
@@ -548,7 +550,8 @@ int main(int argc, char **argv)
 
     _devices = client_config_create_device_list(args.endpoint_postfix);
 
-    protocol_translator_api_start_ctx_t *ctx = malloc(sizeof(protocol_translator_api_start_ctx_t));
+    protocol_translator_api_start_ctx_t *ctx =
+        (protocol_translator_api_start_ctx_t *)malloc(sizeof(protocol_translator_api_start_ctx_t));
     if (!args.protocol_translator_name) {
         fprintf(stderr, "The --protocol-translator-name parameter is mandatory. Please see --help\n");
         return 1;

@@ -2,42 +2,13 @@
 #ifndef _CAT_BLUETOOTH_H
 #define _CAT_BLUETOOTH_H
 
+#include <map>
+
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/hci.h>
+#include <bluetooth/hci_lib.h>
+
 #include <linux/if_ether.h>
-
-struct list_head {
-	struct list_head *next, *prev;
-};
-
-static inline void INIT_LIST_HEAD(struct list_head *list)
-{
-	list->next = list;
-	list->prev = list;
-}
-
-static inline void __list_add(struct list_head *new,
-			      struct list_head *prev,
-			      struct list_head *next)
-{
-    next->prev = new;
-    new->next = next;
-    new->prev = prev;
-    prev->next = new;
-}
-
-static inline void list_add(struct list_head *new, struct list_head *head)
-{
-    __list_add(new, head, head->next);
-}
-
-#define container_of(ptr, type, member) ({			\
-	const typeof( ((type *)0)->member ) *__mptr = (ptr);	\
-	(type *)( (char *)__mptr - offsetof(type,member) );})
-
-#define list_for_each(pos, head) \
-	for (pos = (head)->next; pos != (head); pos = pos->next)
-
-#define list_entry(ptr, type, member) \
-	container_of(ptr, type, member)
 
 /* Unofficial value, might still change */
 #define LE_LINK		0x03
@@ -57,21 +28,17 @@ static inline void list_add(struct list_head *new, struct list_head *head)
 #define EIR_NAME_COMPLETE           0x09  /* complete local name */
 #define EIR_TX_POWER                0x0A  /* transmit power level */
 #define EIR_DEVICE_ID               0x10  /* device ID */
+#define EIR_MANUFACTURE_SPECIFIC    0xFF
 
 #define BLE_MAX_NAME_LEN 30
 #define BLE_MAX_ADDR_STRLEN 18
 
-struct ble_device {
-    uint8_t addr[ETH_ALEN];
-    char name[BLE_MAX_NAME_LEN];
-    struct list_head _list;
+struct cmpBLE {
+    bool operator()(const bdaddr_t a, const bdaddr_t b) const {
+        return memcmp(&a, &b, 6) < 0;
+    }
 };
 
-struct ble_device_list {
-    struct list_head _list;
-    int no_devices;
-};
-
-struct ble_device_list *get_ble_devices(void);
+std::map<bdaddr_t, int, cmpBLE> get_ble_devices(void);
 
 #endif

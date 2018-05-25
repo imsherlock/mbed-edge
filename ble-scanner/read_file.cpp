@@ -60,7 +60,7 @@ int read_file_content(const char* filename, char** data, size_t *read)
             return 1;
         }
 
-        tmp = realloc(buffer, size);
+        tmp = (char *)realloc((void *)buffer, size);
         if(!tmp) {
             free(buffer);
             fclose(f);
@@ -85,7 +85,7 @@ int read_file_content(const char* filename, char** data, size_t *read)
     }
     fclose(f);
 
-    tmp = realloc(buffer, used + 1);
+    tmp = (char *)realloc((void *)buffer, used + 1);
     if (!tmp) {
         free(buffer);
         tr_err("Reallocation error for read file content.");

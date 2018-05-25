@@ -21,12 +21,14 @@
 #include <float.h>
 #include <jansson.h>
 #include "ipso_objects.h"
+extern "C" {
 #include "common/constants.h"
 #include "common/integer_length.h"
 #include "pt-client/pt_api.h"
+#include "mbed-trace/mbed_trace.h"
+}
 #include "ble-scanner/byte_order.h"
 #include "ns_list.h"
-#include "mbed-trace/mbed_trace.h"
 
 #define TRACE_GROUP "ipso-objects"
 
@@ -36,11 +38,11 @@ void add_optional_thermometer_fields(pt_object_instance_t *instance,
     pt_status_t status = PT_STATUS_SUCCESS;
 
     float min_default = FLT_MAX; // Set minimum measured on default to max float
-    uint8_t *min_default_temperature_data = malloc(sizeof(float));
+    uint8_t *min_default_temperature_data = (uint8_t*)malloc(sizeof(float));
     convert_float_value_to_network_byte_order(min_default, min_default_temperature_data);
 
     float max_default = FLT_MIN; // Set maximum measured on default to min float
-    uint8_t *max_default_temperature_data = malloc(sizeof(float));
+    uint8_t *max_default_temperature_data = (uint8_t*)malloc(sizeof(float));
     convert_float_value_to_network_byte_order(max_default, max_default_temperature_data);
 
     (void)pt_object_instance_add_resource(instance, MIN_MEASURED_VALUE,
@@ -94,7 +96,7 @@ void ipso_create_thermometer(pt_device_t *device, const uint16_t object_instance
                object_instance_id, TEMPERATURE_SENSOR);
     }
 
-    uint8_t *temperature_data = malloc(sizeof(float));
+    uint8_t *temperature_data = (uint8_t*)malloc(sizeof(float));
     convert_float_value_to_network_byte_order(temperature, (uint8_t *) temperature_data);
 
     // Add sensor value resource
@@ -137,7 +139,7 @@ void ipso_reset_thermometer_min_max(const pt_resource_opaque_t *resource, const 
         pt_object_instance_find_resource(resource->parent, MIN_MEASURED_VALUE);
     if (min) {
         float min_default = FLT_MAX; // Set minimum measured on reset to max float
-        uint8_t *min_default_temperature_data = malloc(sizeof(float));
+        uint8_t *min_default_temperature_data = (uint8_t*)malloc(sizeof(float));
         convert_float_value_to_network_byte_order(min_default, min_default_temperature_data);
         memcpy(min->value, min_default_temperature_data, sizeof(float));
         free(min_default_temperature_data);
@@ -147,7 +149,7 @@ void ipso_reset_thermometer_min_max(const pt_resource_opaque_t *resource, const 
         pt_object_instance_find_resource(resource->parent, MAX_MEASURED_VALUE);
     if (max) {
         float max_default = FLT_MIN; // Set maximum measured on reset to min float
-        uint8_t *max_default_temperature_data = malloc(sizeof(float));
+        uint8_t *max_default_temperature_data = (uint8_t*)malloc(sizeof(float));
         convert_float_value_to_network_byte_order(max_default, max_default_temperature_data);
         memcpy(max->value, max_default_temperature_data, sizeof(float));
         free(max_default_temperature_data);
@@ -176,7 +178,7 @@ void ipso_create_set_point(pt_device_t *device, uint16_t object_instance_id, flo
         tr_err("Could not create an object instance with id (%d) to the object (%d).", object_instance_id, SET_POINT);
     }
 
-    uint8_t *temperature_data = malloc(sizeof(float));
+    uint8_t *temperature_data = (uint8_t*)malloc(sizeof(float));
     memcpy(temperature_data, &target_temperature, sizeof(float));
 
     // Add set point read write resource
@@ -207,7 +209,7 @@ void ipso_create_set_point(pt_device_t *device, uint16_t object_instance_id, flo
 char* ipso_convert_value_to_hex_string(uint8_t *data, const uint32_t value_size)
 {
     // Representation is in format AA:BB:CC...
-    char *str = calloc(value_size * 3 + /* NUL */ 1, sizeof(char));
+    char *str = (char *)calloc(value_size * 3 + /* NUL */ 1, sizeof(char));
     uint8_t * data_offset = data;
     int str_index = 0;
     for (int i = 0; i < value_size; i++, data_offset++, str_index+=3) {

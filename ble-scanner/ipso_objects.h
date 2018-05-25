@@ -21,7 +21,9 @@
 #ifndef EDGE_IPSO_OBJECTS_H
 #define EDGE_IPSO_OBJECTS_H
 
+extern "C" {
 #include "pt-client/pt_api.h"
+}
 
 enum IPSO_OBJECTS {
     GENERIC_SENSOR     = 3300,

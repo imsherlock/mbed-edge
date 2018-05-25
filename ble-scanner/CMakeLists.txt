@@ -1,5 +1,5 @@
 if (NOT TARGET_GROUP STREQUAL test)
-  file (GLOB SOURCES ./*.c)
+  file (GLOB SOURCES ./*.cpp)
 
   include_directories (${CMAKE_CURRENT_LIST_DIR}/include)
 
